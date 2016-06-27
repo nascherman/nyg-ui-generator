@@ -1,7 +1,7 @@
 'use strict';
 import React, {PropTypes} from 'react';
 
-class NewReactComponent extends React.Component {
+class {{component}} extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -26,29 +26,30 @@ class NewReactComponent extends React.Component {
 
   render() {
     const style = Object.assign({}, {}, this.props.style);
+    const className = '';
 
     return (
       <div
-        className={`new-react-component ${this.props.className}`}
+        className={`${className} ${this.props.className}`}
         style={style}
       >
-        Hello, I'm a new React component
+        Hello, I'm "{{component}}" React component
       </div>
     )
   }
 }
 
-NewReactComponent.propTypes = {
+{{component}}.propTypes = {
   style: PropTypes.object,
   className: PropTypes.string
 
 };
 
-NewReactComponent.defaultProps = {
+{{component}}.defaultProps = {
   style: {
     color: '#fff'
   },
   className: ''
 };
 
-export default NewReactComponent;
+export default {{component}};

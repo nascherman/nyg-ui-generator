@@ -22,6 +22,12 @@ const prompts = [
         value: "bigwheel"
       }
     ]
+  },
+  {
+    type: "input",
+    name: "component",
+    message: "How would you like to name your new component? (component)",
+    default: "NewComponent"
   }
 ];
 

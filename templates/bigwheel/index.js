@@ -2,11 +2,11 @@ const fs = require('fs');
 import hbs from 'handlebars';
 import domify from 'domify';
 
-const NewBigwheelComponent = () => {
+const {{component}} = () => {
 
 };
 
-NewBigwheelComponent.prototype = {
+{{component}}.prototype = {
   init(req, done) {
     this.dom = domify(hbs.compile(fs.readFileSync(__dirname + '/template.hbs', 'utf8'))());
     document.body.appendChild(this.dom);
@@ -27,4 +27,4 @@ NewBigwheelComponent.prototype = {
   }
 };
 
-export default NewBigwheelComponent;
+export default {{component}};

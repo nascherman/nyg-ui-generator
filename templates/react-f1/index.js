@@ -9,7 +9,7 @@ const STATES = {
   IDLE: 'idle'
 };
 
-class NewReactF1Component extends React.Component {
+class {{component}} extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,10 +38,11 @@ class NewReactF1Component extends React.Component {
 
   render() {
     const style = Object.assign({}, {}, this.props.style);
+    const className = '';
 
     return (
       <ReactF1
-        className={`new-react-f1-component ${this.props.className}`}
+        className={`${className} ${this.props.className}`}
         style={style}
         go={this.state.state}
         onComplete={this.state.onComplete}
@@ -49,23 +50,23 @@ class NewReactF1Component extends React.Component {
         transitions={transitions(this.props)}
       >
         <div data-f1="container">
-          Hello, I'm a new React-F1 component
+          Hello, I'm "{{component}}" React-F1 component
         </div>
       </ReactF1>
     );
   }
 }
 
-NewReactF1Component.propTypes = {
+{{component}}.propTypes = {
   style: PropTypes.object,
   className: PropTypes.string
 };
 
-NewReactF1Component.defaultProps = {
+{{component}}.defaultProps = {
   style: {
     color: '#fff'
   },
   className: ''
 };
 
-export default NewReactF1Component;
+export default {{component}};
