@@ -15,6 +15,7 @@ const {{component}} = () => {
   },
 
   animateIn(req, done) {
+    // this function will be automatically called by init()
     done();
   },
 
@@ -23,7 +24,7 @@ const {{component}} = () => {
   },
 
   destroy() {
-
+    // this function will be automatically called by animateOut()
   }
 };
 
