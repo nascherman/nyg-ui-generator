@@ -1,6 +1,7 @@
 const fs = require('fs');
 const execspawn = require('npm-execspawn');
 const nyg = require('nyg');
+const nygMg = require('nyg-module-generator');
 
 const prompts = [
   {
@@ -41,4 +42,6 @@ const gen = nyg(prompts, globs)
     const cmd = 'budo tests/test.js --live  --open -- -t babelify -t brfs';
     execspawn(cmd, {cwd: globs.output});
   })
-  .run();
+//   .run();
+
+nygMg(prompts, globs, gen);
