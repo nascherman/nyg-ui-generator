@@ -1,7 +1,8 @@
 const fs = require('fs');
-const spawn = require('npm-execspawn');
 const nyg = require('nyg');
 const nygMg = require('nyg-module-generator');
+const path = require('path');
+const spawn = require('npm-execspawn');
 
 const prompts = [
   {
@@ -27,21 +28,19 @@ const prompts = [
   {
     type: "input",
     name: "component",
-    message: "How would you like to name your new component? (component)",
+    message: "Name your component:",
     default: "NewComponent"
   }
 ];
 
 const globs = [
-  {base: 'templates/{{type}}', output: '/'},
-  {base: 'templates/tests/{{type}}', output: '/'}
+  {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
+  {base: path.join(__dirname, 'templates/tests/{{type}}'), output: '/'}
 ];
 
-// const gen = nyg(prompts, globs)
-//   .on('postinstall', function () {
-//     const cmd = 'budo test.js --live  --open -- -t babelify -t brfs';
-//     spawn(cmd, {cwd: globs.output});
-//   })
-//   .run();
+const callback = () => {
+  const cmd = 'budo test.js --live  --open -- -t babelify -t brfs';
+  spawn(cmd, {cwd: globs.output});
+};
 
-nygMg(prompts, globs);
+nygMg({prompts, globs, callback});
