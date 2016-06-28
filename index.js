@@ -1,5 +1,5 @@
 const fs = require('fs');
-const execspawn = require('npm-execspawn');
+const spawn = require('npm-execspawn');
 const nyg = require('nyg');
 const nygMg = require('nyg-module-generator');
 
@@ -34,14 +34,14 @@ const prompts = [
 
 const globs = [
   {base: 'templates/{{type}}', output: '/'},
-  {base: 'templates/tests/{{type}}', output: '/tests'}
+  {base: 'templates/tests/{{type}}', output: '/'}
 ];
 
-const gen = nyg(prompts, globs)
-  .on('postinstall', function () {
-    const cmd = 'budo tests/test.js --live  --open -- -t babelify -t brfs';
-    execspawn(cmd, {cwd: globs.output});
-  })
+// const gen = nyg(prompts, globs)
+//   .on('postinstall', function () {
+//     const cmd = 'budo test.js --live  --open -- -t babelify -t brfs';
+//     spawn(cmd, {cwd: globs.output});
+//   })
 //   .run();
 
-nygMg(prompts, globs, gen);
+nygMg(prompts, globs);
