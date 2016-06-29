@@ -1,13 +1,13 @@
 {
-  "name": "test",
-  "version": "0.0.1",
-  "description": "",
+  "name": "{{name}}",
+  "version": "0.0.0",
+  "description": "{{description}}",
   "main": "index.js",
   "license": "MIT",
   "author": {
-    "name": "Vadim Namniak",
-    "email": "vadim@jam3.com",
-    "url": "https://github.com/Jam3"
+    "name": "{{user.name}}",
+    "email": "{{user.email}}",
+    "url": "{{user.url}}"
   },
   "dependencies": {
     "domready": "^1.0.8",
@@ -21,5 +21,17 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "babelify": "^7.3.0"
+  },
+  "scripts": {
+    "test": "budo test.js --live  --open -- -t babelify -t brfs"
+  },
+  "keywords": {{{tags}}},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/{{org.github}}/{{name}}.git"
+  },
+  "homepage": "https://github.com/{{org.github}}/{{name}}",
+  "bugs": {
+    "url": "https://github.com/{{org.github}}/{{name}}/issues"
   }
 }
