@@ -38,9 +38,9 @@ const globs = [
   {base: path.join(__dirname, 'templates/tests/{{type}}'), output: '/'}
 ];
 
-const callback = () => {
-  const cmd = 'budo test.js --live  --open -- -t babelify -t brfs';
-  spawn(cmd, {cwd: globs.output});
+const callback = (cwd = globs.output) => {
+  const cmd = `budo test.js --live  --open -- -t babelify -t brfs`;
+  spawn(cmd, {cwd});
 };
 
 nygMg({prompts, globs, callback});
