@@ -1,6 +1,4 @@
-var nygUiGenerator = require('./');
-var test = require('tape');
+const gen = require('./');
+const test = require('tape');
 
-test('', function (t) {
-  t.end()
-});
+test('', (t) => t.end());
