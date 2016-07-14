@@ -1,6 +1,6 @@
 {
   "name": "nyg-ui-generator",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)",
   "main": "index.js",
   "license": "MIT",
