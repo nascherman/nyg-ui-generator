@@ -33,7 +33,7 @@ class {{component}} extends React.Component {
         className={`${className} ${this.props.className}`}
         style={style}
       >
-        Hello, I'm "{{component}}" React component
+        This is {{component}} (React component)
       </div>
     )
   }
@@ -46,9 +46,7 @@ class {{component}} extends React.Component {
 };
 
 {{component}}.defaultProps = {
-  style: {
-    color: '#fff'
-  },
+  style: {},
   className: ''
 };
 

@@ -1,8 +1,8 @@
 const fs = require('fs');
-const nyg = require('nyg');
-const nygMg = require('nyg-module-generator');
+const nygModuleGenerator = require('nyg-module-generator');
 const path = require('path');
 const spawn = require('npm-execspawn');
+const tape = require('tape');
 
 const prompts = [
   {
@@ -35,12 +35,12 @@ const prompts = [
 
 const globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
-  {base: path.join(__dirname, 'templates/tests/{{type}}'), output: '/'}
 ];
 
 const callback = (cwd = globs.output) => {
-  const cmd = `budo test.js --live  --open -- -t babelify -t brfs`;
+  //run example
+  var cmd = 'npm start';
   spawn(cmd, {cwd});
 };
 
-nygMg({prompts, globs, callback});
+nygModuleGenerator({prompts, globs, callback});
