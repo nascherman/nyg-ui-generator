@@ -50,7 +50,7 @@ class {{component}} extends React.Component {
         transitions={transitions(this.props)}
       >
         <div data-f1="container">
-          This is {{component}} (React-F1 component)
+          Hello, I'm "{{component}}" React-F1 component
         </div>
       </ReactF1>
     );
@@ -63,7 +63,9 @@ class {{component}} extends React.Component {
 };
 
 {{component}}.defaultProps = {
-  style: {},
+  style: {
+    color: '#fff'
+  },
   className: ''
 };
 

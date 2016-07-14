@@ -1,9 +1,10 @@
 'use strict';
 import domready from 'domready';
 import bigwheel from 'bigwheel';
-import TestComponent from '../index.js';
+import TestComponent from './index.js';
 
-document.body.style.background = '#999';
+document.body.style.background = '#212121';
+document.body.style.color = '#fff';
 
 const routes = {
   '/': TestComponent

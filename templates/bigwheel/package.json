@@ -21,12 +21,10 @@
     "babelify": "^7.3.0",
     "brfs": "^1.4.3",
     "fs": "0.0.2",
-    "domify": "^1.4.0",
-    "tape": "^4.6.0"
+    "domify": "^1.4.0"
   },
   "scripts": {
-    "start": "budo example/example.js --live  --open -- -t babelify -t brfs",
-    "test": "node test/test.js"
+    "test": "budo test.js --live  --open -- -t babelify -t brfs"
   },
   "keywords": {{{tags}}},
     "repository": {
