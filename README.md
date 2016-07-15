@@ -1,10 +1,8 @@
 # nyg-ui-generator
 UI scaffold generator based on nyg.
 
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
-
 ## Install
-Generator based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator). 
+Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator). 
 Follow instructions if you haven't alredy installed them. 
 
 Run ```npm i nyg-ui-generator -g```
