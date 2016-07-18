@@ -3,9 +3,9 @@ UI scaffold generator based on nyg.
 
 ## Install
 Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator). 
-Follow instructions if you haven't alredy installed them. 
+Follow their installation instructions if you haven't installed them yet. 
 
-Run ```npm i nyg-ui-generator -g```
+Run: ```npm i nyg-ui-generator -g```
 
 ## Usage
 ```
@@ -14,7 +14,7 @@ nyg nyg-ui-generator
 ```
 You will then be prompted with a number of questions, which will define the type of UI component you want to generate, where to put it, and whether you want to publish it to a GitHub repo. The appropriate files will then be copied to the specified directory and it will install all your needed dependencies. 
 
-# Test
+## Test
 After installation it will automatically run the UI component in your browser.
 
 To manually run the example in your browser
