@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const nyg = require('nyg');
 const nygModuleGenerator = require('nyg-module-generator');
 
-const promptsInit = [
+const promptAction = [
   {
     type: "list",
     message: "What would you like to do?",
@@ -30,13 +30,16 @@ const promptsInit = [
   }
 ];
 
-const prompts = [
+const promptName = [
   {
     type: "input",
     name: "component",
     message: "Component name:",
     default: "MyComponent"
-  },
+  }
+];
+
+const promptType = [
   {
     type: "list",
     message: "Choose UI type:",
@@ -59,7 +62,7 @@ const prompts = [
   }
 ];
 
-const promptDetails = [
+const promptLocation = [
   {
     'name': 'location',
     'message': 'Where would you like to create your component folder?',
@@ -73,15 +76,24 @@ const promptDetails = [
   }
 ];
 
+const prompts = promptName.concat(promptType);
+const promptsPostInstall = promptType;
+
 const globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
 
-const globsSome = [
+const globsBoilerplate = [
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '*.js', output: '/'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '*.scss', output: '/'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '*.less', output: '/'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '*.hbs', output: '/'}
+];
+
+const globsPostInstall = [
+  {base: path.join(__dirname, 'templates/{{type}}/example'), glob: '*', output: '/example'},
+  {base: path.join(__dirname, 'templates/{{type}}/test'), glob: '*', output: '/test'},
+  {base: path.join(__dirname, 'templates/{{type}}/'), glob: 'package.json', output: '/'},
 ];
 
 const callback = (cwd = globs.output) => {
@@ -90,12 +102,12 @@ const callback = (cwd = globs.output) => {
   spawn(cmd, {cwd});
 };
 
-const gen = nyg(promptsInit, []);
+const gen = nyg(promptAction, []);
 gen.on('postprompt', () => {
   const action = gen.config.get('action');
-  const opts = {prompts, globs, callback};
   const isModule = (action === 'module');
   const isPostInstall = (action === 'postinstall');
+  const opts = {prompts, globs, isPostInstall, promptsPostInstall, globsPostInstall, callback};
 
   if (isModule || isPostInstall) {
     nygModuleGenerator({prompts, globs, callback, isPostInstall});
@@ -104,10 +116,10 @@ gen.on('postprompt', () => {
     var outputDir;
 
     // copy only UI related files
-    let _prompts = promptDetails.concat(prompts);
-    globsSome.forEach((g) => g.base = path.relative(__dirname, g.base));
+    let _prompts = promptLocation.concat(prompts);
+    globsBoilerplate.forEach((g) => g.base = path.relative(__dirname, g.base));
 
-    let _gen = nyg(_prompts, globsSome)
+    let _gen = nyg(_prompts, globsBoilerplate)
       .on('postprompt', () => {
         outputDir = path.join(gen.config.get('location'), gen.config.get('folder'));
         _gen.chdir(outputDir);
