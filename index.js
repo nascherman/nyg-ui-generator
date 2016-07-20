@@ -34,7 +34,7 @@ const prompts = [
   {
     type: "input",
     name: "component",
-    message: "Name your component:",
+    message: "Component name:",
     default: "MyComponent"
   },
   {
@@ -64,6 +64,12 @@ const promptDetails = [
     'name': 'location',
     'message': 'Where would you like to create your component folder?',
     'default': process.cwd()
+  },
+  {
+    type: "input",
+    name: "folder",
+    message: "Component folder name:",
+    default: "MyComponent"
   }
 ];
 
@@ -103,7 +109,7 @@ gen.on('postprompt', () => {
 
     let _gen = nyg(_prompts, globsSome)
       .on('postprompt', () => {
-        outputDir = path.join(gen.config.get('location'), gen.config.get('component'));
+        outputDir = path.join(gen.config.get('location'), gen.config.get('folder'));
         _gen.chdir(outputDir);
 
         console.log('component dir:', outputDir);
