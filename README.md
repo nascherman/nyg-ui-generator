@@ -12,7 +12,7 @@ Prerequisites: [nyg](https://www.npmjs.com/package/nyg) needs to be installed gl
 cd your-project-directory
 nyg nyg-ui-generator
 ```
-You will then be prompted with a number of questions, which will define the type of UI component you want to generate, where to put it, and whether you want to publish it to a GitHub repo. The appropriate files will then be copied to the specified directory and it will install all your needed dependencies. 
+You will then be prompted with a number of questions, which will define the type of UI component you want to generate, where to put it, and whether you want to publish it to a GitHub repo. The appropriate files will then be copied to the specified path and all the dependencies will be installed. 
 
 ## Test
 After installation it will automatically run the UI component in your browser.

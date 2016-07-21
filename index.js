@@ -24,7 +24,7 @@ const promptAction = [
       },
       {
         name: "Publish existing component as module",
-        value: "postinstall"
+        value: "postpublish"
       }
     ]
   }
@@ -77,7 +77,7 @@ const promptLocation = [
 ];
 
 const prompts = promptName.concat(promptType);
-const promptsPostInstall = promptType;
+const promptsPostPublish = promptType;
 
 const globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
@@ -90,7 +90,7 @@ const globsBoilerplate = [
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '*.hbs', output: '/'}
 ];
 
-const globsPostInstall = [
+const globsPostPublish = [
   {base: path.join(__dirname, 'templates/{{type}}/example'), glob: '*', output: '/example'},
   {base: path.join(__dirname, 'templates/{{type}}/test'), glob: '*', output: '/test'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: 'package.json', output: '/'},
@@ -107,11 +107,11 @@ const gen = nyg(promptAction, [])
     const action = gen.config.get('action');
     const isBoilerplate = (action === 'boilerplate');
     const isModule = (action === 'module');
-    const isPostInstall = (action === 'postinstall');
-    const opts = {prompts, globs, isPostInstall, promptsPostInstall, globsPostInstall, callback};
+    const isPostPublish = (action === 'postpublish');
+    const opts = {prompts, globs, isPostPublish, promptsPostPublish, globsPostPublish, callback};
 
-    if (isModule || isPostInstall) {
-      nygModuleGenerator({prompts, globs, callback, isPostInstall});
+    if (isModule || isPostPublish) {
+      nygModuleGenerator({prompts, globs, callback, isPostPublish});
     } else if (isBoilerplate) {
       console.log('your cwd:', process.cwd());
       var outputDir;
