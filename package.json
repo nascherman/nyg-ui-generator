@@ -1,7 +1,7 @@
 {
   "name": "nyg-ui-generator",
   "version": "0.2.0",
-  "description": "[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)",
+  "description": "",
   "main": "index.js",
   "license": "MIT",
   "author": "Vadim Namniak <vadim@jam3.com> (https://github.com/Jam3)",

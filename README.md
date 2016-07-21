@@ -1,11 +1,11 @@
 # nyg-ui-generator
-UI scaffold generator based on nyg.
+UI scaffold generator and module publisher.
 
 ## Install
-Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator). 
-Follow their installation instructions if you haven't installed them yet. 
+Generator based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator). 
+Prerequisites: [nyg](https://www.npmjs.com/package/nyg) needs to be installed globally. Please follow instructions.
 
-Run: ```npm i nyg-ui-generator -g```
+```npm i nyg-ui-generator -g```
 
 ## Usage
 ```

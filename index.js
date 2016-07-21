@@ -102,34 +102,35 @@ const callback = (cwd = globs.output) => {
   spawn(cmd, {cwd});
 };
 
-const gen = nyg(promptAction, []);
-gen.on('postprompt', () => {
-  const action = gen.config.get('action');
-  const isModule = (action === 'module');
-  const isPostInstall = (action === 'postinstall');
-  const opts = {prompts, globs, isPostInstall, promptsPostInstall, globsPostInstall, callback};
+const gen = nyg(promptAction, [])
+  .on('postprompt', () => {
+    const action = gen.config.get('action');
+    const isBoilerplate = (action === 'boilerplate');
+    const isModule = (action === 'module');
+    const isPostInstall = (action === 'postinstall');
+    const opts = {prompts, globs, isPostInstall, promptsPostInstall, globsPostInstall, callback};
 
-  if (isModule || isPostInstall) {
-    nygModuleGenerator({prompts, globs, callback, isPostInstall});
-  } else {
-    console.log('your cwd:', process.cwd());
-    var outputDir;
+    if (isModule || isPostInstall) {
+      nygModuleGenerator({prompts, globs, callback, isPostInstall});
+    } else if (isBoilerplate) {
+      console.log('your cwd:', process.cwd());
+      var outputDir;
 
-    // copy only UI related files
-    let _prompts = promptLocation.concat(prompts);
-    globsBoilerplate.forEach((g) => g.base = path.relative(__dirname, g.base));
+      // copy only UI boilerplate files
+      const _prompts = promptLocation.concat(prompts);
+      globsBoilerplate.forEach((g) => g.base = path.relative(__dirname, g.base));
 
-    let _gen = nyg(_prompts, globsBoilerplate)
-      .on('postprompt', () => {
+      const _gen = nyg(_prompts, globsBoilerplate);
+
+      _gen.on('postprompt', () => {
         outputDir = path.join(gen.config.get('location'), gen.config.get('folder'));
-        _gen.chdir(outputDir);
-
         console.log('component dir:', outputDir);
+
+        _gen.chdir(outputDir);
 
         // check if directory exists
         try {
           fs.accessSync(outputDir);
-
           const contents = fs.readdirSync(outputDir);
           contents.forEach((item, index) => {
             (item.indexOf('.') === 0) && contents.splice(index, 1);
@@ -142,16 +143,35 @@ gen.on('postprompt', () => {
         } catch (e) {
           mkdir.sync(outputDir);
         }
-      })
-      .on('postinstall', () => {
+      });
+      _gen.on('postcopy', () => {
+        const done = _gen.async();
+
+        // rename files
+        const folder = gen.config.get('folder');
+        const component = gen.config.get('component');
+        _gen.prompt({
+          type: 'confirm',
+          name: 'rename',
+          message: `Would you prefer ${folder}/${component}.js over ${folder}/index.js?`,
+          default: false
+        }, () => {
+          if (_gen.config.get('rename')) {
+            fs.renameSync(`${outputDir}/index.js`, `${outputDir}/${component}.js`);
+          }
+          done();
+        });
+      });
+      _gen.on('postinstall', () => {
         // clean up
         let cmd = 'rm -r nyg-cfg.json';
         spawn(cmd, {cwd: globs.output});
         spawn(cmd, {cwd: outputDir});
 
         open(outputDir);
-      })
-      .run();
-  }
-});
-gen.run();
+      });
+      _gen.run();
+    }
+
+  })
+  .run();
