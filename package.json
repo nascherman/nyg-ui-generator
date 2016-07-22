@@ -1,25 +1,22 @@
 {
   "name": "nyg-ui-generator",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "license": "MIT",
   "author": "Vadim Namniak <vadim@jam3.com> (https://github.com/Jam3)",
   "dependencies": {
-    "npm-execspawn": "^1.3.0",
     "nyg-module-generator": "^1.1.0"
   },
-  "devDependencies": {
-    "budo": "^8.3.0",
-    "fs": "0.0.2",
-    "tape": "^4.6.0"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "node test.js"
   },
   "keywords": [
+    "jam3",
     "ui",
-    "ui-generator",
+    "module",
+    "generator",
     "nyg"
   ],
   "repository": {

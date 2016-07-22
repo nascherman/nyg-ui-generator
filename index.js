@@ -94,13 +94,11 @@ const readConfigs = (gen) => {
       }
     }
 
+    let prompts = [];
+    let globs = globsPostPublish;
+    const isPostPublish = true;
     const type = configs.type;
-    const opts = {
-      prompts: [],
-      globs: globsPostPublish,
-      isPostPublish: true,
-      type
-    };
+    const opts = {prompts, globs, isPostPublish, type, callback};
 
     if (!type) {
       gen.prompt(promptType, (data) => {
