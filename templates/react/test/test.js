@@ -22,7 +22,7 @@ test('----- {{component}} Test -----', (t) => {
   const renderer = createRenderer();
   renderer.render(<TestComponent />);
   const result = renderer.getRenderOutput();
-  t.jsxEquals(result, <div className=" " style={ {} }>This is NewComponent (React component)</div>);
+  t.jsxEquals(result, <div className=" " style={ {} }>This is {{component}} (React component)</div>);
 
   t.end();
 });

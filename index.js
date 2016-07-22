@@ -13,7 +13,7 @@ const promptAction = [
     name: "action",
     choices: [
       {
-        name: "Generate UI boilerplate files",
+        name: "Generate UI component files",
         value: "boilerplate",
         checked: true
       },
@@ -24,6 +24,10 @@ const promptAction = [
       {
         name: "Publish existing component as module",
         value: "postpublish"
+      },
+      {
+        name: "exit ->",
+        value: "exit"
       }
     ]
   }
@@ -116,6 +120,9 @@ const gen = nyg(promptAction, [])
     const action = gen.config.get('action');
 
     switch (action) {
+      case 'exit':
+        gen.end();
+        break;
       case 'module':
         moduleGenerator({prompts, globs, callback});
         break;
