@@ -92,9 +92,7 @@ const readConfigs = (gen) => {
     } else {
       configs = JSON.parse(data);
       if (!configs.type) {
-        console.log(' ');
         console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json, so you need to select it below.`));
-        console.log(' ');
       }
     }
 
