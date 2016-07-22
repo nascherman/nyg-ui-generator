@@ -86,13 +86,14 @@ const callback = (cwd = globs.output) => {
 const readConfigs = (gen) => {
   var configs = {};
 
+  // check for existing config file
   fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
     if (err) {
       console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
     } else {
       configs = JSON.parse(data);
       if (!configs.type) {
-        console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json, so you need to select it below.`));
+        console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
       }
     }
 
@@ -102,6 +103,7 @@ const readConfigs = (gen) => {
     const type = configs.type;
     const opts = {prompts, globs, isPostPublish, type, callback};
 
+    // get UI type info or ask user if it's missing
     if (!type) {
       gen.prompt(promptType, (data) => {
         opts.type = data.type;
@@ -118,9 +120,6 @@ const gen = nyg(promptAction, [])
     const action = gen.config.get('action');
 
     switch (action) {
-      case 'exit':
-        gen.end();
-        break;
       case 'module':
         moduleGenerator({prompts, globs, callback});
         break;
@@ -130,6 +129,9 @@ const gen = nyg(promptAction, [])
       case 'postpublish':
         const done = gen.async(); // important to prevent config file overwrite before reading
         readConfigs(gen);
+        break;
+      case 'exit':
+        gen.end();
         break;
     }
   })
