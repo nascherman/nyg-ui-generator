@@ -69,8 +69,8 @@ const globs = [
 
 const globsPostPublish = [
   {base: path.join(__dirname, 'templates/{{type}}/example'), glob: '*', output: '/example'},
-  {base: path.join(__dirname, 'templates/{{type}}/test'), glob: '*', output: '/test'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: 'package.json', output: '/'},
+  {base: path.join(__dirname, 'templates/{{type}}/'), glob: '.*', output: '/'},
 ];
 
 const callback = (cwd = globs.output) => {
