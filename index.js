@@ -80,6 +80,7 @@ const globsPostPublish = [
 
 var configs = {};
 var done;
+var hasConfig = true;
 
 const gen = nyg(promptAction, [])
   .on('postprompt', () => {
@@ -109,13 +110,14 @@ function readConfigs() {
   fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
     if (err) {
       console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
+      hasConfig = false;
     } else {
       configs = JSON.parse(data);
-
-      checkIndexFile().then(() => {
-        checkType();
-      });
     }
+
+    checkIndexFile().then(() => {
+      checkType();
+    });
   });
 }
 
@@ -125,10 +127,11 @@ function checkType() {
   const isPostPublish = true;
   const callback = runExample;
   const type = configs.type;
-  const opts = {prompts, globs, isPostPublish, type, callback};
+  const rename = gen.config.get('rename');
+  const opts = {prompts, globs, isPostPublish, type, callback, rename};
 
   if (!configs.type) {
-    console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
+    hasConfig && console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
     gen.prompt(promptType, (data) => {
       gen.config._data = Object.assign({}, configs, gen.config._data, data.type);
       done();
@@ -149,8 +152,6 @@ function checkIndexFile() {
       resolve();
     } catch (e) {
       if (!configs.rename) {
-        console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot find index.js as well as 'rename' information from ${process.cwd()}/nyg-cfg.json.`));
-
         const choices = [];
         const re = /(\.(js)$)/i;
 
@@ -163,15 +164,23 @@ function checkIndexFile() {
             choices.push(option)
           });
 
-        gen.prompt({
-          type: "list",
-          message: "Select your component entry (index) file:",
-          name: "rename",
-          choices
-        }, () => {
+        if (choices.length > 1) {
+          hasConfig && console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot find index.js as well as 'rename' information from ${process.cwd()}/nyg-cfg.json.`));
+
+          gen.prompt({
+            type: "list",
+            message: "Select your component entry (index) file:",
+            name: "rename",
+            choices
+          }, () => {
+            gen.config._data = Object.assign({}, configs, gen.config._data);
+            resolve();
+          })
+        } else {
+          gen.config.set('rename', choices[0].name);
           gen.config._data = Object.assign({}, configs, gen.config._data);
           resolve();
-        })
+        }
       } else {
         resolve();
       }
