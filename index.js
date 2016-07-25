@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs.extra');
 const path = require('path');
 const spawn = require('npm-execspawn');
 const chalk = require('chalk');
