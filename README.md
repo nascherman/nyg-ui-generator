@@ -1,14 +1,16 @@
 # nyg-ui-generator
-UI scaffold generator and module publisher. Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator).
+Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator).
 
 ## Prerequisites
 * [nyg](https://www.npmjs.com/package/nyg) 
-* [ghrepo] (https://github.com/Jam3/ghrepo)
+* [ghrepo](https://github.com/Jam3/ghrepo)
 
 Those need to be installed globally. Please follow instructions.
 
 ## Install
-```npm i nyg-ui-generator -g```
+```
+npm i nyg-ui-generator -g
+```
 
 ## Usage
 ```

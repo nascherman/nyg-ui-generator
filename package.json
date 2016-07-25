@@ -1,7 +1,7 @@
 {
   "name": "nyg-ui-generator",
-  "version": "2.0.0",
-  "description": "",
+  "version": "2.0.3",
+  "description": "UI scaffold generator and module publisher",
   "main": "index.js",
   "license": "MIT",
   "author": "Vadim Namniak <vadim@jam3.com> (https://github.com/Jam3)",
