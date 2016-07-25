@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const nyg = require('nyg');
 const moduleGenerator = require('nyg-module-generator');
 const filesGenerator = require('./lib/filesGenerator');
+const Promise = require('bluebird');
 
 const promptAction = [
   {
@@ -77,43 +78,8 @@ const globsPostPublish = [
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '.*', output: '/'},
 ];
 
-const callback = (cwd = globs.output) => {
-  // run example in the browser
-  var cmd = 'npm start';
-  spawn(cmd, {cwd});
-};
-
-const readConfigs = (gen) => {
-  var configs = {};
-
-  // check for existing config file
-  fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
-    if (err) {
-      console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
-    } else {
-      configs = JSON.parse(data);
-      if (!configs.type) {
-        console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
-      }
-    }
-
-    let prompts = [];
-    let globs = globsPostPublish;
-    const isPostPublish = true;
-    const type = configs.type;
-    const opts = {prompts, globs, isPostPublish, type, callback};
-
-    // get UI type info or ask user if it's missing
-    if (!type) {
-      gen.prompt(promptType, (data) => {
-        opts.type = data.type;
-        moduleGenerator(opts);
-      })
-    } else {
-      moduleGenerator(opts);
-    }
-  });
-};
+var configs = {};
+var done;
 
 const gen = nyg(promptAction, [])
   .on('postprompt', () => {
@@ -121,14 +87,15 @@ const gen = nyg(promptAction, [])
 
     switch (action) {
       case 'module':
+        const callback = runExample;
         moduleGenerator({prompts, globs, callback});
         break;
       case 'boilerplate':
-        filesGenerator(prompts);
+        filesGenerator(prompts, gen.config);
         break;
       case 'postpublish':
-        const done = gen.async(); // important to prevent config file overwrite before reading
-        readConfigs(gen);
+        done = gen.async();
+        readConfigs(done);
         break;
       case 'exit':
         gen.end();
@@ -136,3 +103,83 @@ const gen = nyg(promptAction, [])
     }
   })
   .run();
+
+function readConfigs() {
+  // check for existing config file
+  fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
+    if (err) {
+      console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
+    } else {
+      configs = JSON.parse(data);
+
+      checkIndexFile().then(() => {
+        checkType();
+      });
+    }
+  });
+}
+
+function checkType() {
+  let prompts = [];
+  let globs = globsPostPublish;
+  const isPostPublish = true;
+  const callback = runExample;
+  const type = configs.type;
+  const opts = {prompts, globs, isPostPublish, type, callback};
+
+  if (!configs.type) {
+    console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
+    gen.prompt(promptType, (data) => {
+      gen.config._data = Object.assign({}, configs, gen.config._data, data.type);
+      done();
+      opts.type = data.type;
+      moduleGenerator(opts);
+    });
+  } else {
+    gen.config._data = Object.assign({}, configs, gen.config._data);
+    done();
+    moduleGenerator(opts);
+  }
+}
+
+function checkIndexFile() {
+  return new Promise((resolve, reject) => {
+    try {
+      fs.statSync('index.js');
+      resolve();
+    } catch (e) {
+      if (!configs.rename) {
+        console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot find index.js as well as 'rename' information from ${process.cwd()}/nyg-cfg.json.`));
+
+        const choices = [];
+        const re = /(\.(js)$)/i;
+
+        fs.readdirSync(process.cwd())
+          .filter((c) => re.test(c))
+          .map((f) => {
+            let option = {};
+            option.name = f;
+            option.value = f;
+            choices.push(option)
+          });
+
+        gen.prompt({
+          type: "list",
+          message: "Select your component entry (index) file:",
+          name: "rename",
+          choices
+        }, () => {
+          gen.config._data = Object.assign({}, configs, gen.config._data);
+          resolve();
+        })
+      } else {
+        resolve();
+      }
+    }
+  });
+}
+
+function runExample(cwd = globs.output) {
+  const cmd = 'npm start';
+  spawn(cmd, {cwd});
+}
