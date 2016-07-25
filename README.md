@@ -20,7 +20,7 @@ You will then be prompted with a number of questions, which will define the type
 
 There are 3 options:
 
-1. **Generate UI component files** - simply create boilerplate files (js, styles, templates). Recommended to run generator from project's root for this option.
+**1. Generate UI component files** - simply create boilerplate files (js, styles, templates). Recommended to run generator from project's root for this option.
 You'll be asked for:
  * path - where to put the new component (default: cwd)
  * component folder name - folder to be created under specified path (default: MyComponent)
@@ -30,7 +30,7 @@ You'll be asked for:
  
  Generator will copy files into new component folder and show it in your file browser
 
-2. **Create UI module** - generate UI module with boilerplate files and set up test and example. Recommended that you have a specific global folder for all your generated modules. You'll be asked for:
+**2. Create UI module** - generate UI module with boilerplate files and set up test and example. Recommended that you have a specific global folder for all your generated modules. You'll be asked for:
  * path - where to put the new component (default: your modules folder e.g `/Users/name/modules/`)
  * module name - respective folder will be created under specified path
  * other module specific questions like description, kew words etc
@@ -41,9 +41,9 @@ You'll be asked for:
 
   Afterwards, you'll be asked about publishing the UI module to GitHub and npm.
 
-3. **Post publish** - publish existing component as module. **IMPORTANT: to run this, you have to be in the cmponent folder**. Generator will try to read existing config file and get the information about UI type, index file name, etc. If `nyg-cfg.json` is missing in the component folder or no information about type or name is available, then user will be asked about it.
+**3. Post publish** - publish existing component as module. **IMPORTANT: to run this, you have to be in the component folder**. Generator will try to read existing config file and get the information about UI type, index file name, etc. If `nyg-cfg.json` is missing in the component folder or no information about type or name is available, then user will be asked about it.
    
-  Generator will proceed with similar to **Create UI module** steps.
+  Generator will proceed with similar to **Create UI module** steps. Files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about upon installation.
 
 ## Test
 To manually run the example in your browser
