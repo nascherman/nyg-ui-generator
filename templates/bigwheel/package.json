@@ -28,7 +28,7 @@
     "start": "budo example/example.js --live  --open -- -t babelify -t brfs",
     "test": "node test/test.js"
   },
-  "keywords": {{{tags}}},
+  "keywords": {{#if isModule }} {{{tags}}} {{else}} []{{/if}},
     "repository": {
   "type": "git",
   "url": "git://github.com/{{org.github}}/{{name}}.git"
