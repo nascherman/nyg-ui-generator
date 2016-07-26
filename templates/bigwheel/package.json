@@ -22,7 +22,8 @@
     "brfs": "^1.4.3",
     "fs": "0.0.2",
     "domify": "^1.4.0",
-    "tape": "^4.6.0"
+    "tape": "^4.6.0",
+    "budo": "^8.3.0"
   },
   "scripts": {
     "start": "budo example/example.js --live  --open -- -t babelify -t brfs",
