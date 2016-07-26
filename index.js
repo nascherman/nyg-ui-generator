@@ -1,9 +1,10 @@
+const requireg = require('requireg');
 const fs = require('fs.extra');
 const path = require('path');
 const spawn = require('npm-execspawn');
 const chalk = require('chalk');
 const nyg = require('nyg');
-const moduleGenerator = require('nyg-module-generator');
+const moduleGenerator = requireg('nyg-module-generator'); // require global module. local dep doesn't work properly
 const filesGenerator = require('./lib/filesGenerator');
 const Promise = require('bluebird');
 

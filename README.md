@@ -3,9 +3,16 @@ Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-g
 
 ## Prerequisites
 * [nyg](https://www.npmjs.com/package/nyg) 
+* [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator)
 * [ghrepo](https://github.com/Jam3/ghrepo)
 
-Those need to be installed globally. Please follow instructions.
+These need to be installed globally so do:
+
+```
+npm i ghrepo -g
+npm i nyg -g
+npm i nyg-module-generator -g
+```
 
 ## Install
 ```
