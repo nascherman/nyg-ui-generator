@@ -1,6 +1,6 @@
 {
   "name": "nyg-ui-generator",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "UI scaffold generator and module publisher",
   "main": "index.js",
   "license": "MIT",
