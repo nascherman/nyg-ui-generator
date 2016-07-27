@@ -80,7 +80,7 @@ const globsPostPublish = [
 ];
 
 var configs = {};
-var done;
+var next;
 
 const gen = nyg(promptAction, [])
   .on('postprompt', () => {
@@ -95,8 +95,8 @@ const gen = nyg(promptAction, [])
         filesGenerator(prompts, gen.config);
         break;
       case 'postpublish':
-        done = gen.async();
-        readConfigs(done);
+        next = gen.async();
+        readConfigs();
         break;
       case 'exit':
         gen.end();
@@ -125,13 +125,14 @@ function checkType(cb) {
   const isPostPublish = true;
   const callback = runExample;
   const type = configs.type;
-  const rename = gen.config.get('rename');
+  const rename = configs.rename;
   const opts = {prompts, globs, isPostPublish, type, callback, rename};
 
   if (!configs.type) {
-    !Object.keys(configs).length && console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
+    console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
     gen.prompt(promptType, (data) => {
-      gen.config.get('type', data.type);
+      opts.type = data.type;
+      configs.type = data.type;
       cb && cb(opts);
     });
   } else {
@@ -141,7 +142,7 @@ function checkType(cb) {
 
 function execPostPublish(opts) {
   mergeConfigs();
-  done();
+  next();
   moduleGenerator(opts);
 }
 
