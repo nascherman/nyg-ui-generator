@@ -5,8 +5,8 @@ const spawn = require('npm-execspawn');
 const chalk = require('chalk');
 const nyg = require('nyg');
 const moduleGenerator = requireg('nyg-module-generator'); // require global module. local dep doesn't work properly
+const detectIndexFile = require('./lib/detectIndexFile');
 const filesGenerator = require('./lib/filesGenerator');
-const Promise = require('bluebird');
 
 const promptAction = [
   {
@@ -81,7 +81,6 @@ const globsPostPublish = [
 
 var configs = {};
 var done;
-var hasConfig = true;
 
 const gen = nyg(promptAction, [])
   .on('postprompt', () => {
@@ -107,22 +106,20 @@ const gen = nyg(promptAction, [])
   .run();
 
 function readConfigs() {
-  // check for existing config file
   fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
     if (err) {
       console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
-      hasConfig = false;
     } else {
       configs = JSON.parse(data);
     }
 
-    checkIndexFile().then(() => {
-      checkType();
+    detectIndexFile(gen, configs, mergeConfigs).then(() => {
+      checkType(execPostPublish);
     });
   });
 }
 
-function checkType() {
+function checkType(cb) {
   let prompts = [];
   let globs = globsPostPublish;
   const isPostPublish = true;
@@ -132,61 +129,24 @@ function checkType() {
   const opts = {prompts, globs, isPostPublish, type, callback, rename};
 
   if (!configs.type) {
-    hasConfig && console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
+    !Object.keys(configs).length && console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
     gen.prompt(promptType, (data) => {
-      gen.config._data = Object.assign({}, configs, gen.config._data, data.type);
-      done();
-      opts.type = data.type;
-      moduleGenerator(opts);
+      gen.config.get('type', data.type);
+      cb && cb(opts);
     });
   } else {
-    gen.config._data = Object.assign({}, configs, gen.config._data);
-    done();
-    moduleGenerator(opts);
+    cb && cb(opts);
   }
 }
 
-function checkIndexFile() {
-  return new Promise((resolve, reject) => {
-    try {
-      fs.statSync('index.js');
-      resolve();
-    } catch (e) {
-      if (!configs.rename) {
-        const choices = [];
-        const re = /(\.(js)$)/i;
+function execPostPublish(opts) {
+  mergeConfigs();
+  done();
+  moduleGenerator(opts);
+}
 
-        fs.readdirSync(process.cwd())
-          .filter((c) => re.test(c))
-          .map((f) => {
-            let option = {};
-            option.name = f;
-            option.value = f;
-            choices.push(option)
-          });
-
-        if (choices.length > 1) {
-          hasConfig && console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot find index.js as well as 'rename' information from ${process.cwd()}/nyg-cfg.json.`));
-
-          gen.prompt({
-            type: "list",
-            message: "Select your component entry (index) file:",
-            name: "rename",
-            choices
-          }, () => {
-            gen.config._data = Object.assign({}, configs, gen.config._data);
-            resolve();
-          })
-        } else {
-          gen.config.set('rename', choices[0].name);
-          gen.config._data = Object.assign({}, configs, gen.config._data);
-          resolve();
-        }
-      } else {
-        resolve();
-      }
-    }
-  });
+function mergeConfigs() {
+  gen.config._data = Object.assign({}, configs, gen.config._data);
 }
 
 function runExample(cwd = globs.output) {

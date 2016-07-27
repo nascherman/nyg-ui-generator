@@ -52,6 +52,12 @@ You'll be asked for:
    
   Generator will proceed with similar to **Create UI module** steps. Files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about upon installation.
 
+  NOTE: when reading `nyg-cfg.json` and detecting index file (for pointing examples/tests files):
+  * if there's `index.js` or there's only one JS file exists in the component directory, it will be assigned as index
+  * if there's no `index.js` + there are multiple JS files and no rename information in the config file, or the appropriate file from the configs doesn't exist, then user will be prompted to choose their index/entry file from the list
+   
+  **IF THERE ARE PROBLEMS WITH READING `nyg-cfg.json`** and generator unexpectedly exits, the easiest way to make it work is to remove the config file, then user will be asked for missing info.
+  
 ## Test
 To manually run the example in your browser
 ```
