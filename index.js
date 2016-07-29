@@ -4,9 +4,10 @@ const path = require('path');
 const spawn = require('npm-execspawn');
 const chalk = require('chalk');
 const nyg = require('nyg');
-const moduleGenerator = requireg('nyg-module-generator'); // require global module. local dep doesn't work properly
+const moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly
 const detectIndexFile = require('./lib/detectIndexFile');
 const filesGenerator = require('./lib/filesGenerator');
+const detectDeps = require('./lib/detectDeps');
 
 const promptAction = [
   {
@@ -73,7 +74,7 @@ const globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
 
-const globsPostPublish = [
+var globsPostPublish = [
   {base: path.join(__dirname, 'templates/{{type}}/example'), glob: '*', output: '/example'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: 'package.json', output: '/'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '.*', output: '/'},
@@ -143,7 +144,7 @@ function checkType(cb) {
 function execPostPublish(opts) {
   mergeConfigs();
   next();
-  moduleGenerator(opts);
+  detectDeps(configs, globsPostPublish, opts, () => moduleGenerator(opts));
 }
 
 function mergeConfigs() {
