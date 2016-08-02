@@ -106,12 +106,16 @@ const gen = nyg(promptAction, [])
   })
   .run();
 
-function readConfigs() {
-  fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
+function readConfigs(configFile = 'nyg-cfg.json') {
+  fs.readFile(configFile, 'utf8', (err, data) => {
     if (err) {
       console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
     } else {
-      configs = JSON.parse(data);
+      if (!data) {
+        fs.unlink(configFile);
+      } else {
+        configs = JSON.parse(data);
+      }
     }
 
     detectIndexFile(gen, configs, mergeConfigs).then(() => {
@@ -144,6 +148,8 @@ function checkType(cb) {
 function execPostPublish(opts) {
   mergeConfigs();
   next();
+  //moduleGenerator(opts);
+
   detectDeps(configs, globsPostPublish, opts, () => moduleGenerator(opts));
 }
 
