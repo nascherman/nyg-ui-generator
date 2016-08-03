@@ -154,7 +154,8 @@ function execPostPublish(opts) {
 }
 
 function mergeConfigs() {
-  gen.config._data = Object.assign({}, configs, gen.config._data);
+  const currConfigs = gen.config.getAll();
+  gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
 function runExample(cwd = globs.output) {
