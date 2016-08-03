@@ -4,9 +4,10 @@ const path = require('path');
 const spawn = require('npm-execspawn');
 const chalk = require('chalk');
 const nyg = require('nyg');
-const moduleGenerator = requireg('nyg-module-generator'); // require global module. local dep doesn't work properly
+const moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly
 const detectIndexFile = require('./lib/detectIndexFile');
 const filesGenerator = require('./lib/filesGenerator');
+const detectDeps = require('./lib/detectDeps');
 
 const promptAction = [
   {
@@ -73,7 +74,7 @@ const globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
 
-const globsPostPublish = [
+var globsPostPublish = [
   {base: path.join(__dirname, 'templates/{{type}}/example'), glob: '*', output: '/example'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: 'package.json', output: '/'},
   {base: path.join(__dirname, 'templates/{{type}}/'), glob: '.*', output: '/'},
@@ -105,12 +106,16 @@ const gen = nyg(promptAction, [])
   })
   .run();
 
-function readConfigs() {
-  fs.readFile('nyg-cfg.json', 'utf8', (err, data) => {
+function readConfigs(configFile = 'nyg-cfg.json') {
+  fs.readFile(configFile, 'utf8', (err, data) => {
     if (err) {
       console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
     } else {
-      configs = JSON.parse(data);
+      if (!data) {
+        fs.unlink(configFile);
+      } else {
+        configs = JSON.parse(data);
+      }
     }
 
     detectIndexFile(gen, configs, mergeConfigs).then(() => {
@@ -143,11 +148,14 @@ function checkType(cb) {
 function execPostPublish(opts) {
   mergeConfigs();
   next();
-  moduleGenerator(opts);
+  //moduleGenerator(opts);
+
+  detectDeps(configs, globsPostPublish, opts, () => moduleGenerator(opts));
 }
 
 function mergeConfigs() {
-  gen.config._data = Object.assign({}, configs, gen.config._data);
+  const currConfigs = gen.config.getAll();
+  gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
 function runExample(cwd = globs.output) {
