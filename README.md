@@ -2,17 +2,20 @@
 Generator is based on [nyg](https://www.npmjs.com/package/nyg) and [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator).
 
 ## Prerequisites
+
+Following modules need to be installed globally:
 * [nyg](https://www.npmjs.com/package/nyg) 
 * [nyg-module-generator](https://www.npmjs.com/package/nyg-module-generator)
 * [ghrepo](https://github.com/Jam3/ghrepo)
 
-These need to be installed globally so do:
-
+do:
 ```
 npm i ghrepo -g
 npm i nyg -g
 npm i nyg-module-generator -g
 ```
+
+Make sure you have `node v6+`
 
 You also need to have your user npm configurations set such as `init.author.name`, `init.author.email` and `init.author.github`. 
 Check existing configs using `npm config get` and set missing props using `npm config set someProp "some-value"`
