@@ -14,6 +14,9 @@ npm i nyg -g
 npm i nyg-module-generator -g
 ```
 
+You also need to have your user npm configurations set such as `init.author.name`, `init.author.email` and `init.author.github`. 
+Check existing configs using `npm config get` and set missing props using `npm config set someProp "some-value"`
+
 ## Install
 ```
 npm i nyg-ui-generator -g
@@ -50,14 +53,14 @@ You'll be asked for:
 
 **3. Post publish** - publish existing component as module. **IMPORTANT: to run this, you have to be in the component folder**. Generator will try to read existing config file and get the information about UI type, index file name, etc. If `nyg-cfg.json` is missing in the component folder or no information about type or name is available, then user will be asked about it.
    
-  Generator will proceed with similar to **Create UI module** steps. Files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about upon installation.
+  Generator will proceed with similar to **Create UI module** steps. Suggested that files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about.
 
   NOTE: when reading `nyg-cfg.json` and detecting index file (for pointing examples/tests files):
-  * if there's `index.js` or there's only one JS file exists in the component directory, it will be assigned as index
-  * if there's no `index.js` + there are multiple JS files and no rename information in the config file, or the appropriate file from the configs doesn't exist, then user will be prompted to choose their index/entry file from the list
+  * if there's file named`index.js` or there's only one JS file exists in the component root, it will be assigned as index
+  * if there's no `index.js` + there are multiple JS files and no rename information in the config file, then user will be prompted to choose their index file (entry point) from the list
    
-  **IF THERE ARE PROBLEMS WITH READING `nyg-cfg.json`** and generator unexpectedly exits, the easiest way to make it work is to remove the config file, then user will be asked for missing info.
-  
+  **IF THERE ARE PROBLEMS WITH READING `nyg-cfg.json`** and generator unexpectedly exits, user can remove the config file, then they will be prompted for missing info.
+ 
 ## Test
 To manually run the example in your browser
 ```
