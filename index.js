@@ -1,32 +1,33 @@
-const requireg = require('requireg');
-const fs = require('fs.extra');
-const path = require('path');
-const spawn = require('npm-execspawn');
-const chalk = require('chalk');
-const nyg = require('nyg');
-const moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly
-const detectIndexFile = require('./lib/detectIndexFile');
-const filesGenerator = require('./lib/filesGenerator');
-const detectDeps = require('./lib/detectDeps');
+var Promise = require('bluebird');
+var requireg = require('requireg');
+var fs = require('fs.extra');
+var path = require('path');
+var spawn = require('npm-execspawn');
+var chalk = require('chalk');
+var nyg = require('nyg');
+var moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
+var detectIndexFile = require('./lib/detectIndexFile');
+var filesGenerator = require('./lib/filesGenerator');
+var detectDeps = require('./lib/detectDeps');
 
-const promptAction = [
+var promptAction = [
   {
     type: "list",
     message: "What would you like to do?",
     name: "action",
     choices: [
       {
-        name: "Generate UI component files",
+        name: "Generate boilerplate UI component",
         value: "boilerplate",
         checked: true
       },
       {
-        name: "Create UI module",
-        value: "module"
-      },
-      {
         name: "Publish existing component as module",
         value: "postpublish"
+      },
+      {
+        name: "Create UI module",
+        value: "module"
       },
       {
         name: "exit ->",
@@ -36,7 +37,7 @@ const promptAction = [
   }
 ];
 
-const promptName = [
+var promptName = [
   {
     type: "input",
     name: "component",
@@ -45,7 +46,7 @@ const promptName = [
   }
 ];
 
-const promptType = [
+var promptType = [
   {
     type: "list",
     message: "Select UI type:",
@@ -68,9 +69,9 @@ const promptType = [
   }
 ];
 
-const prompts = promptName.concat(promptType);
+var prompts = promptName.concat(promptType);
 
-const globs = [
+var globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
 
@@ -83,17 +84,16 @@ var globsPostPublish = [
 var configs = {};
 var next;
 
-const gen = nyg(promptAction, [])
-  .on('postprompt', () => {
-    const action = gen.config.get('action');
+var gen = nyg(promptAction, [])
+  .on('postprompt', function () {
+    var action = gen.config.get('action');
 
     switch (action) {
       case 'module':
-        const callback = runExample;
-        moduleGenerator({prompts, globs, callback});
+        moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
         break;
       case 'boilerplate':
-        filesGenerator(prompts, gen.config);
+        filesGenerator(prompts);
         break;
       case 'postpublish':
         next = gen.async();
@@ -106,10 +106,12 @@ const gen = nyg(promptAction, [])
   })
   .run();
 
-function readConfigs(configFile = 'nyg-cfg.json') {
-  fs.readFile(configFile, 'utf8', (err, data) => {
+function readConfigs(configFile) {
+  configFile = configFile || 'nyg-cfg.json';
+
+  fs.readFile(configFile, 'utf8', function (err, data) {
     if (err) {
-      console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Could not open nyg-cfg.json from ${process.cwd()}.`));
+      console.warn(chalk.bgMagenta('WARN:'), chalk.magenta('Could not open "nyg-cfg.json" from ' + process.cwd()));
     } else {
       if (!data) {
         fs.unlink(configFile);
@@ -118,47 +120,50 @@ function readConfigs(configFile = 'nyg-cfg.json') {
       }
     }
 
-    detectIndexFile(gen, configs, mergeConfigs).then(() => {
-      checkType(execPostPublish);
-    });
+    detectIndexFile(gen, configs, mergeConfigs)
+      .then(function () {
+        checkType();
+      });
   });
 }
 
-function checkType(cb) {
-  let prompts = [];
-  let globs = globsPostPublish;
-  const isPostPublish = true;
-  const callback = runExample;
-  const type = configs.type;
-  const rename = configs.rename;
-  const opts = {prompts, globs, isPostPublish, type, callback, rename};
+function checkType() {
+  var opts = {
+    prompts: [],
+    globs: globsPostPublish,
+    isPostPublish: true,
+    type: configs.type,
+    callback: runExample,
+    rename: configs.rename
+  };
 
   if (!configs.type) {
-    console.warn(chalk.bgMagenta('WARN:'), chalk.magenta(`Cannot get 'type' from ${process.cwd()}/nyg-cfg.json.`));
-    gen.prompt(promptType, (data) => {
+    console.warn(chalk.bgMagenta('WARN:'), chalk.magenta('Cannot get "type" from ' + process.cwd() + '/nyg-cfg.json'));
+    gen.prompt(promptType, function (data) {
       opts.type = data.type;
       configs.type = data.type;
-      cb && cb(opts);
+      execPostPublish(opts);
     });
   } else {
-    cb && cb(opts);
+    execPostPublish(opts);
   }
 }
 
 function execPostPublish(opts) {
   mergeConfigs();
   next();
-  //moduleGenerator(opts);
-
-  detectDeps(configs, globsPostPublish, opts, () => moduleGenerator(opts));
+  detectDeps(configs, globsPostPublish, opts, function () {
+    moduleGenerator(opts);
+  });
 }
 
 function mergeConfigs() {
-  const currConfigs = gen.config.getAll();
+  var currConfigs = gen.config.getAll();
   gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
-function runExample(cwd = globs.output) {
-  const cmd = 'npm start';
+function runExample(cwd) {
+  cwd = cwd || globs.output;
+  var cmd = 'npm start';
   spawn(cmd, {cwd});
 }

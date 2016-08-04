@@ -1,12 +1,13 @@
 {
   "name": "nyg-ui-generator",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "UI scaffold generator and module publisher",
   "main": "index.js",
   "license": "MIT",
   "author": "Vadim Namniak <vadim@jam3.com> (https://github.com/Jam3)",
   "dependencies": {
     "acorn-jsx": "^3.0.1",
+    "bluebird": "^3.4.1",
     "chalk": "^1.1.3",
     "detect-import-require": "^2.0.0",
     "filter-npm-modules": "^1.0.0",

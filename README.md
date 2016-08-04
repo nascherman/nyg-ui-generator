@@ -15,8 +15,6 @@ npm i nyg -g
 npm i nyg-module-generator -g
 ```
 
-Make sure you have `node v6+`
-
 You also need to have your user npm configurations set such as `init.author.name`, `init.author.email` and `init.author.github`. 
 Check existing configs using `npm config get` and set missing props using `npm config set someProp "some-value"`
 
