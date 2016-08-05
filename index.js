@@ -8,7 +8,11 @@ var nyg = require('nyg');
 var moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
 var detectIndexFile = require('./lib/detectIndexFile');
 var filesGenerator = require('./lib/filesGenerator');
-var detectDeps = require('./lib/detectDeps');
+var detectImports = require('./lib/detectImports');
+var rewriteImports = require('./lib/rewriteImportsPath');
+
+rewriteImports();
+return
 
 var promptAction = [
   {
@@ -152,7 +156,7 @@ function checkType() {
 function execPostPublish(opts) {
   mergeConfigs();
   next();
-  detectDeps(configs, globsPostPublish, opts, function () {
+  detectImports(configs, globsPostPublish, opts, function () {
     moduleGenerator(opts);
   });
 }
