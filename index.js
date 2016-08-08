@@ -8,7 +8,8 @@ var nyg = require('nyg');
 var moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
 var detectIndexFile = require('./lib/detectIndexFile');
 var filesGenerator = require('./lib/filesGenerator');
-var detectDeps = require('./lib/detectDeps');
+var detectImports = require('./lib/detectImports');
+var rewriteImports = require('./lib/rewriteImportsPath');
 
 var promptAction = [
   {
@@ -134,7 +135,8 @@ function checkType() {
     isPostPublish: true,
     type: configs.type,
     callback: runExample,
-    rename: configs.rename
+    rename: configs.rename,
+    postCopyCallback: rewriteFiles
   };
 
   if (!configs.type) {
@@ -152,7 +154,7 @@ function checkType() {
 function execPostPublish(opts) {
   mergeConfigs();
   next();
-  detectDeps(configs, globsPostPublish, opts, function () {
+  detectImports(configs, globsPostPublish, opts, function () {
     moduleGenerator(opts);
   });
 }
@@ -162,8 +164,11 @@ function mergeConfigs() {
   gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
-function runExample(cwd) {
-  cwd = cwd || globs.output;
+function rewriteFiles(localImportsData, outputDir) {
+  rewriteImports(localImportsData, outputDir);
+}
+
+function runExample(outputDir) {
   var cmd = 'npm start';
-  spawn(cmd, {cwd});
+  spawn(cmd, {cwd: outputDir});
 }
