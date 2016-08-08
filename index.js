@@ -11,9 +11,6 @@ var filesGenerator = require('./lib/filesGenerator');
 var detectImports = require('./lib/detectImports');
 var rewriteImports = require('./lib/rewriteImportsPath');
 
-rewriteImports();
-return
-
 var promptAction = [
   {
     type: "list",
@@ -138,7 +135,8 @@ function checkType() {
     isPostPublish: true,
     type: configs.type,
     callback: runExample,
-    rename: configs.rename
+    rename: configs.rename,
+    postCopyCallback: rewriteFiles
   };
 
   if (!configs.type) {
@@ -166,8 +164,11 @@ function mergeConfigs() {
   gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
-function runExample(cwd) {
-  cwd = cwd || globs.output;
+function rewriteFiles(localImportsData, outputDir) {
+  rewriteImports(localImportsData, outputDir);
+}
+
+function runExample(outputDir) {
   var cmd = 'npm start';
-  spawn(cmd, {cwd});
+  spawn(cmd, {cwd: outputDir});
 }
