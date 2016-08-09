@@ -5,7 +5,7 @@ var path = require('path');
 var spawn = require('npm-execspawn');
 var chalk = require('chalk');
 var nyg = require('nyg');
-var moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
+var moduleGenerator = requireg('nyg-module-generator');
 var detectIndexFile = require('./lib/detectIndexFile');
 var filesGenerator = require('./lib/filesGenerator');
 var detectImports = require('./lib/detectImports');
@@ -42,7 +42,7 @@ var promptName = [
   {
     type: "input",
     name: "component",
-    message: "Component name:",
+    message: "Component class name:",
     default: "MyComponent"
   }
 ];
