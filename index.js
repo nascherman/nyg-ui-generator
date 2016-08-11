@@ -5,11 +5,19 @@ var path = require('path');
 var spawn = require('npm-execspawn');
 var chalk = require('chalk');
 var nyg = require('nyg');
-var moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
+var moduleGenerator = require('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
 var detectIndexFile = require('./lib/detectIndexFile');
 var filesGenerator = require('./lib/filesGenerator');
 var detectImports = require('./lib/detectImports');
 var rewriteImports = require('./lib/rewriteImportsPath');
+var args = require('args');
+args
+  .option('type', 'The type of component to be made (react, react-f1, bigwheel)')
+  .option('name', 'The name of the ui component')
+  .option('folder', 'The name of the ui folder')
+  .option('action', 'The desired action (module, boilerplate, postpublish)');
+
+const flags = args.parse(process.argv);
 
 var promptAction = [
   {
@@ -70,8 +78,7 @@ var promptType = [
   }
 ];
 
-var prompts = promptName.concat(promptType);
-
+var prompts = flags.name ? flags.type ? undefined : promptType : promptName.concat(promptType);
 var globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
@@ -84,8 +91,8 @@ var globsPostPublish = [
 
 var configs = {};
 var next;
-
-var gen = nyg(promptAction, [])
+if(!flags.action) {
+  var gen = nyg(promptAction, [])
   .on('postprompt', function () {
     var action = gen.config.get('action');
 
@@ -94,7 +101,7 @@ var gen = nyg(promptAction, [])
         moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
         break;
       case 'boilerplate':
-        filesGenerator(prompts);
+        filesGenerator(prompts, flags);
         break;
       case 'postpublish':
         next = gen.async();
@@ -105,7 +112,27 @@ var gen = nyg(promptAction, [])
         break;
     }
   })
-  .run();
+  .run();  
+}
+else {
+  var action = flags.action;
+
+    switch (action) {
+      case 'module':
+        moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
+        break;
+      case 'boilerplate':
+        filesGenerator(prompts, flags);
+        break;
+      case 'postpublish':
+        next = gen.async();
+        readConfigs();
+        break;
+      case 'exit':
+        gen.end();
+        break;
+    }
+}
 
 function readConfigs(configFile) {
   configFile = configFile || 'nyg-cfg.json';
