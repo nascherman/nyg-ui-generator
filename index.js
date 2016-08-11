@@ -19,6 +19,8 @@ args
 
 const flags = args.parse(process.argv);
 
+validateFlags(flags);
+
 var promptAction = [
   {
     type: "list",
@@ -116,22 +118,21 @@ if(!flags.action) {
 }
 else {
   var action = flags.action;
-
-    switch (action) {
-      case 'module':
-        moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
-        break;
-      case 'boilerplate':
-        filesGenerator(prompts, flags);
-        break;
-      case 'postpublish':
-        next = gen.async();
-        readConfigs();
-        break;
-      case 'exit':
-        gen.end();
-        break;
-    }
+  switch (action) {
+    case 'module':
+      moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
+      break;
+    case 'boilerplate':
+      filesGenerator(prompts, flags);
+      break;
+    case 'postpublish':
+      next = gen.async();
+      readConfigs();
+      break;
+    case 'exit':
+      gen.end();
+      break;
+  }
 }
 
 function readConfigs(configFile) {
@@ -175,6 +176,29 @@ function checkType() {
     });
   } else {
     execPostPublish(opts);
+  }
+}
+
+function validateFlags(flags) {
+  let type = flags.type;
+  let action = flags.action;
+  let name = flags.name;
+  let folder = flags.folder;
+  if(action) {
+    if(action !== 'module' || action !==  'boilerplate' || action !==  'postpublish') {
+      throw new Error('invalid action flag');
+    }
+  }
+  if(type) {
+    if(type !== 'react' || type !== 'react-f1' || type !== 'bighwheel') {
+      throw new Error('invalid type');
+    }
+  }
+  if(name) {
+    //
+  }
+  if(folder) {
+    // 
   }
 }
 
