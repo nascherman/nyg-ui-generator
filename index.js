@@ -15,6 +15,7 @@ args
   .option('type', 'The type of component to be made (react, react-f1, bigwheel)')
   .option('name', 'The name of the ui component')
   .option('folder', 'The name of the ui folder')
+  .option('location', 'The location of the ui folder')
   .option('action', 'The desired action (module, boilerplate, postpublish)');
 
 const flags = args.parse(process.argv);
@@ -79,8 +80,13 @@ var promptType = [
     ]
   }
 ];
-
-var prompts = flags.name ? flags.type ? undefined : promptType : promptName.concat(promptType);
+var prompts;
+if(flags.name) {
+  prompts = flags.type ? undefined : promptType;
+}
+else {
+  prompts = flags.type ? promptName : promptName.concat(promptType);
+}
 var globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
@@ -118,6 +124,7 @@ if(!flags.action) {
 }
 else {
   var action = flags.action;
+  gen = nyg([], []);
   switch (action) {
     case 'module':
       moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
@@ -126,11 +133,11 @@ else {
       filesGenerator(prompts, flags);
       break;
     case 'postpublish':
-      next = gen.async();
+      // next = gen.async();
       readConfigs();
       break;
     case 'exit':
-      gen.end();
+      console.warn(chalk.bgMagenta('Exiting'));
       break;
   }
 }
@@ -148,7 +155,6 @@ function readConfigs(configFile) {
         configs = JSON.parse(data);
       }
     }
-
     detectIndexFile(gen, configs, mergeConfigs)
       .then(function () {
         checkType();
@@ -180,32 +186,27 @@ function checkType() {
 }
 
 function validateFlags(flags) {
-  let type = flags.type;
-  let action = flags.action;
-  let name = flags.name;
-  let folder = flags.folder;
-  if(action) {
-    if(action !== 'module' || action !==  'boilerplate' || action !==  'postpublish') {
-      throw new Error('invalid action flag');
+  if(flags.action) {
+    if(flags.action !== 'module' && flags.action !==  'boilerplate' && flags.action !==  'postpublish') {
+      console.error('invalid action flag');
+    }
+    if(flags.type) {
+      if(flags.type !== 'react' && flags.type !== 'react-f1' && flags.type !== 'bigwheel') {
+        console.error('invalid type');
+      }
     }
   }
-  if(type) {
-    if(type !== 'react' || type !== 'react-f1' || type !== 'bighwheel') {
-      throw new Error('invalid type');
-    }
-  }
-  if(name) {
-    //
-  }
-  if(folder) {
-    // 
+  else if(flags.action !== 'boilerplate' && (flags.type || flags.location || flags.name)) {
+    console.warn('--type --location and --name flags aren\'t used when creating a module or postpublishing');
   }
 }
 
 function execPostPublish(opts) {
   mergeConfigs();
-  next();
+  if(!flags.action) next();
   detectImports(configs, globsPostPublish, opts, function () {
+    console.log('OPTS ');
+    console.log(opts);
     moduleGenerator(opts);
   });
 }
