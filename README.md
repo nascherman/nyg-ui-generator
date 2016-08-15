@@ -62,6 +62,29 @@ You'll be asked for:
    
   **IF THERE ARE PROBLEMS WITH READING `nyg-cfg.json`** and generator unexpectedly exits, user can remove the config file, then they will be prompted for missing info.
  
+## Arguments
+
+You can pass in command line arguments to the ui generator that specify the type, folder name, folder location and component type. running `nyg nyg-ui-generator -h` will bring up the available options and there descriptions.
+
+```shell
+Usage: nyg [options] [command]
+  
+  Commands:
+  
+    help  Display help
+  
+  Options:
+  
+    -a, --action    The desired action (module, boilerplate, postpublish)
+    -f, --folder    The name of the ui folder
+    -h, --help      Output usage information
+    -l, --location  The location of the ui folder
+    -n, --name      The name of the ui component
+    -t, --type      The type of component to be made (react, react-f1, bigwheel)
+    -v, --version   Output the version number
+``` 
+These arguments are currently for the `boilerplate` action only.
+
 ## Test
 To manually run the example in your browser
 ```
