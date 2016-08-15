@@ -18,7 +18,7 @@ args
   .option('location', 'The location of the ui folder')
   .option('action', 'The desired action (module, boilerplate, postpublish)');
 
-const flags = args.parse(process.argv);
+var flags = args.parse(process.argv);
 
 validateFlags(flags);
 
