@@ -205,8 +205,6 @@ function execPostPublish(opts) {
   mergeConfigs();
   if(!flags.action) next();
   detectImports(configs, globsPostPublish, opts, function () {
-    console.log('OPTS ');
-    console.log(opts);
     moduleGenerator(opts);
   });
 }
