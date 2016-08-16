@@ -29,6 +29,9 @@ nyg nyg-ui-generator
 ```
 You will then be prompted with a number of questions, which will define the type of UI component you want to generate, where to put it, and whether you want to publish it.
 
+
+Please refer to [User Flow Diagram](https://docs.google.com/presentation/d/1Fc0p_LC4s2bE6acedVbCg13IkN-QMR0R24pfzfWTCUE/edit#slide=id.g159d8674e5_0_214)
+
 There are 3 options:
 
 **1. Generate UI component files** - simply create boilerplate files (js, styles, templates). Recommended to run generator from project's root for this option.
