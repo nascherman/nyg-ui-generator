@@ -31,7 +31,7 @@ class {{component}} extends React.Component {
     // component has already rendered but will re-render when receives new props
   }
 
-  componentWillUnmout() {
+  componentWillUnmount() {
     // component is about to be removed from DOM
     // clean up any event listeners ect. here
   }
