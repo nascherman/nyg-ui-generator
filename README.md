@@ -56,15 +56,16 @@ You'll be asked for:
   Afterwards, you'll be asked about publishing the UI module to GitHub and npm.
 
 **3. Post publish** - publish existing component as module. **IMPORTANT: to run this, you have to be in the component folder**. Generator will try to read existing config file and get the information about UI type, index file name, etc. If `nyg-cfg.json` is missing in the component folder or no information about type or name is available, then user will be asked about it.
-   
   Generator will proceed with similar to **Create UI module** steps. Suggested that files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about.
 
   NOTE: when reading `nyg-cfg.json` and detecting index file (for pointing examples/tests files):
   * if there's file named`index.js` or there's only one JS file exists in the component root, it will be assigned as index
-  * if there's no `index.js` + there are multiple JS files and no rename information in the config file, then user will be prompted to choose their index file (entry point) from the list
+  * if there's no `index.js` and there are multiple JS files and no rename information in the config file, then user will be prompted to choose their index file (entry point) from the list
    
-  **IF THERE ARE PROBLEMS WITH READING `nyg-cfg.json`** and generator unexpectedly exits, user can remove the config file, then they will be prompted for missing info.
+  If there are any problems with reading `nyg-cfg.json` and generator unexpectedly exits, user can try removing the config file, then they will be prompted for missing info.
  
+  Finally, the generator will try to detect all dependencies based on imports (requires) reading them recursively, then install all module dependencies and bring all local dependencies into ```lib``` folder of your target directory, overwriting imports paths. Note that this will use ```acorn-jsx``` module to parse your jsx and some syntax may not be supported such as ```static```, so you would have to resolve it manually.
+
 ## Arguments
 
 You can pass in command line arguments to the ui generator that specify the type, folder name, folder location and component type. running `nyg nyg-ui-generator -h` will bring up the available options and there descriptions.
