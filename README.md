@@ -90,11 +90,11 @@ You'll be asked for:
 
   NOTE: when reading `nyg-cfg.json` and detecting index file (for pointing examples/tests files):
   * if there's file named`index.js` or there's only one JS file exists in the component root, it will be assigned as index
-  * if there's no `index.js` + there are multiple JS files and no rename information in the config file, then user will be prompted to choose their index file (entry point) from the list
+  * if there's no `index.js` and there are multiple JS files and no rename information in the config file, then user will be prompted to choose their index file (entry point) from the list
    
- If there are any problems with reading nyg-cfg.json and generator unexpectedly exits, user can try removing the config file, then they will be prompted for missing info.
+ If there are any problems with reading ```nyg-cfg.json``` and generator unexpectedly exits, the user can try removing the config file, then they will be prompted for missing info.
 
-Generator  will try to detect all dependencies based on imports (requires) reading them recursively, then install all module dependencies and bring all local dependencies into lib folder of your target directory, overwriting imports paths. Note that this will use acorn-jsx module to parse your jsx and some syntax may not be supported such as static, so you would have to resolve it manually.
+Generator  will try to detect all dependencies based on imports (requires) reading them recursively, then install all module dependencies and bring all local dependencies into ```lib``` folder of your target directory, overwriting imports paths. Note that this will use ```acorn-jsx``` module to parse your jsx and some syntax may not be supported such as ```static```, so you would have to resolve it manually.
 
 ## Test
 To manually run the example in your browser
