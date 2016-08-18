@@ -5,11 +5,22 @@ var path = require('path');
 var spawn = require('npm-execspawn');
 var chalk = require('chalk');
 var nyg = require('nyg');
-var moduleGenerator = requireg('nyg-module-generator');
+var moduleGenerator = requireg('nyg-module-generator'); // require global generator. local dep doesn't work properly on post publish
 var detectIndexFile = require('./lib/detectIndexFile');
 var filesGenerator = require('./lib/filesGenerator');
 var detectImports = require('./lib/detectImports');
 var rewriteImports = require('./lib/rewriteImportsPath');
+var args = require('args');
+args
+  .option('type', 'The type of component to be made (react, react-f1, bigwheel)')
+  .option('name', 'The name of the ui component')
+  .option('folder', 'The name of the ui folder')
+  .option('location', 'The location of the ui folder')
+  .option('action', 'The desired action (module, boilerplate, postpublish)');
+
+var flags = args.parse(process.argv);
+
+validateFlags(flags);
 
 var promptAction = [
   {
@@ -42,7 +53,7 @@ var promptName = [
   {
     type: "input",
     name: "component",
-    message: "Component class name:",
+    message: "Component name:",
     default: "MyComponent"
   }
 ];
@@ -69,8 +80,13 @@ var promptType = [
     ]
   }
 ];
-
-var prompts = promptName.concat(promptType);
+var prompts;
+if (flags.name) {
+  prompts = flags.type ? undefined : promptType;
+}
+else {
+  prompts = flags.type ? promptName : promptName.concat(promptType);
+}
 
 var globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
@@ -84,28 +100,48 @@ var globsPostPublish = [
 
 var configs = {};
 var next;
+if (!flags.action) {
+  var gen = nyg(promptAction, [])
+    .on('postprompt', function () {
+      var action = gen.config.get('action');
 
-var gen = nyg(promptAction, [])
-  .on('postprompt', function () {
-    var action = gen.config.get('action');
-
-    switch (action) {
-      case 'module':
-        moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
-        break;
-      case 'boilerplate':
-        filesGenerator(prompts);
-        break;
-      case 'postpublish':
-        next = gen.async();
-        readConfigs();
-        break;
-      case 'exit':
-        gen.end();
-        break;
-    }
-  })
-  .run();
+      switch (action) {
+        case 'module':
+          moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
+          break;
+        case 'boilerplate':
+          filesGenerator(prompts, flags);
+          break;
+        case 'postpublish':
+          next = gen.async();
+          readConfigs();
+          break;
+        case 'exit':
+          gen.end();
+          break;
+      }
+    })
+    .run();
+}
+else {
+  var action = flags.action;
+  gen = nyg([], []);
+  switch (action) {
+    case 'module':
+      moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
+      break;
+    case 'boilerplate':
+      filesGenerator(prompts, flags);
+      break;
+    case 'postpublish':
+      // next = gen.async();
+      readConfigs();
+      break;
+    case 'exit':
+      console.warn(chalk.bgMagenta('Exiting'));
+      break;
+  }
+}
 
 function readConfigs(configFile) {
   configFile = configFile || 'nyg-cfg.json';
@@ -120,7 +156,6 @@ function readConfigs(configFile) {
         configs = JSON.parse(data);
       }
     }
-
     detectIndexFile(gen, configs, mergeConfigs)
       .then(function () {
         checkType();
@@ -151,9 +186,25 @@ function checkType() {
   }
 }
 
+function validateFlags(flags) {
+  if (flags.action) {
+    if (flags.action !== 'module' && flags.action !== 'boilerplate' && flags.action !== 'postpublish') {
+      console.error('invalid action flag');
+    }
+    if (flags.type) {
+      if (flags.type !== 'react' && flags.type !== 'react-f1' && flags.type !== 'bigwheel') {
+        console.error('invalid type');
+      }
+    }
+  }
+  else if (flags.action !== 'boilerplate' && (flags.type || flags.location || flags.name)) {
+    console.warn('--type --location and --name flags aren\'t used when creating a module or postpublishing');
+  }
+}
+
 function execPostPublish(opts) {
   mergeConfigs();
-  next();
+  if (!flags.action) next();
   detectImports(configs, globsPostPublish, opts, function () {
     moduleGenerator(opts);
   });
@@ -164,8 +215,8 @@ function mergeConfigs() {
   gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
-function rewriteFiles(localImportsData, outputDir) {
-  rewriteImports(localImportsData, outputDir);
+function rewriteFiles(localImportsData, localImportsDir, outputDir) {
+  rewriteImports(localImportsData, localImportsDir, outputDir);
 }
 
 function runExample(outputDir) {
