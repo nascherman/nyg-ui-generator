@@ -81,12 +81,13 @@ var promptType = [
   }
 ];
 var prompts;
-if(flags.name) {
+if (flags.name) {
   prompts = flags.type ? undefined : promptType;
 }
 else {
   prompts = flags.type ? promptName : promptName.concat(promptType);
 }
+
 var globs = [
   {base: path.join(__dirname, 'templates/{{type}}'), output: '/'},
 ];
@@ -99,28 +100,28 @@ var globsPostPublish = [
 
 var configs = {};
 var next;
-if(!flags.action) {
+if (!flags.action) {
   var gen = nyg(promptAction, [])
-  .on('postprompt', function () {
-    var action = gen.config.get('action');
+    .on('postprompt', function () {
+      var action = gen.config.get('action');
 
-    switch (action) {
-      case 'module':
-        moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
-        break;
-      case 'boilerplate':
-        filesGenerator(prompts, flags);
-        break;
-      case 'postpublish':
-        next = gen.async();
-        readConfigs();
-        break;
-      case 'exit':
-        gen.end();
-        break;
-    }
-  })
-  .run();  
+      switch (action) {
+        case 'module':
+          moduleGenerator({prompts: prompts, globs: globs, callback: runExample});
+          break;
+        case 'boilerplate':
+          filesGenerator(prompts, flags);
+          break;
+        case 'postpublish':
+          next = gen.async();
+          readConfigs();
+          break;
+        case 'exit':
+          gen.end();
+          break;
+      }
+    })
+    .run();
 }
 else {
   var action = flags.action;
@@ -186,24 +187,24 @@ function checkType() {
 }
 
 function validateFlags(flags) {
-  if(flags.action) {
-    if(flags.action !== 'module' && flags.action !==  'boilerplate' && flags.action !==  'postpublish') {
+  if (flags.action) {
+    if (flags.action !== 'module' && flags.action !== 'boilerplate' && flags.action !== 'postpublish') {
       console.error('invalid action flag');
     }
-    if(flags.type) {
-      if(flags.type !== 'react' && flags.type !== 'react-f1' && flags.type !== 'bigwheel') {
+    if (flags.type) {
+      if (flags.type !== 'react' && flags.type !== 'react-f1' && flags.type !== 'bigwheel') {
         console.error('invalid type');
       }
     }
   }
-  else if(flags.action !== 'boilerplate' && (flags.type || flags.location || flags.name)) {
+  else if (flags.action !== 'boilerplate' && (flags.type || flags.location || flags.name)) {
     console.warn('--type --location and --name flags aren\'t used when creating a module or postpublishing');
   }
 }
 
 function execPostPublish(opts) {
   mergeConfigs();
-  if(!flags.action) next();
+  if (!flags.action) next();
   detectImports(configs, globsPostPublish, opts, function () {
     moduleGenerator(opts);
   });
@@ -214,8 +215,8 @@ function mergeConfigs() {
   gen.config.setAll(Object.assign({}, configs, currConfigs));
 }
 
-function rewriteFiles(localImportsData, outputDir) {
-  rewriteImports(localImportsData, outputDir);
+function rewriteFiles(localImportsData, localImportsDir, outputDir) {
+  rewriteImports(localImportsData, localImportsDir, outputDir);
 }
 
 function runExample(outputDir) {
