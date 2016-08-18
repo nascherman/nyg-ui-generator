@@ -71,7 +71,7 @@ You'll be asked for:
  * UI type (React, React-F1, or Bigwheel)
  * whether you want to rename your index.js (e.g MyComponent.js). Default is 'No'
  
- Generator will copy files into new component folder and show it in your file browser
+Generator will copy files into new component folder and show it in your file browser
 
 **2. Create UI module** - generate UI module with boilerplate files and set up a test and example. Recommended that you have a specific global folder for all your generated modules. You'll be asked for:
  * path - where to put the new component (default: your modules folder e.g `/Users/name/modules/`)
@@ -80,19 +80,19 @@ You'll be asked for:
  * component name - component's class name inside JS file (default: MyComponent)
  * UI type (React, React-F1, or Bigwheel)
  
-  Generator will copy files into new component folder, install all dependencies, show component folder in your file browser and run example in your browser.
+Generator will copy files into new component folder, install all dependencies, show component folder in your file browser and run example in your browser.
 
-  Afterwards, you'll be asked about publishing the UI module to GitHub and npm.
+Afterwards, you'll be asked about publishing the UI module to GitHub and npm.
 
 **3. Post publish** - publish existing component as module. **IMPORTANT: to run this, you have to be in the component folder**. Generator will try to read existing config file and get the information about UI type, index file name, etc. If `nyg-cfg.json` is missing in the component folder or no information about type or name is available, then user will be asked about it.
-   
-  Generator will proceed with similar to **Create UI module** steps. Suggested that files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about.
+ 
+Generator will proceed with similar to **Create UI module** steps. Suggested that files will be copied to and published from your default modules folder (e.g. `/Users/name/modules/`) which you will be asked about.
 
-  NOTE: when reading `nyg-cfg.json` and detecting index file (for pointing examples/tests files):
+NOTE: when reading `nyg-cfg.json` and detecting index file (for pointing examples/tests files):
   * if there's file named`index.js` or there's only one JS file exists in the component root, it will be assigned as index
   * if there's no `index.js` and there are multiple JS files and no rename information in the config file, then user will be prompted to choose their index file (entry point) from the list
-   
- If there are any problems with reading ```nyg-cfg.json``` and generator unexpectedly exits, the user can try removing the config file, then they will be prompted for missing info.
+ 
+If there are any problems with reading ```nyg-cfg.json``` and generator unexpectedly exits, the user can try removing the config file, then they will be prompted for missing info.
 
 Generator  will try to detect all dependencies based on imports (requires) reading them recursively, then install all module dependencies and bring all local dependencies into ```lib``` folder of your target directory, overwriting imports paths. Note that this will use ```acorn-jsx``` module to parse your jsx and some syntax may not be supported such as ```static```, so you would have to resolve it manually.
 
