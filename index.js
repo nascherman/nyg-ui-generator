@@ -80,6 +80,7 @@ var promptType = [
     ]
   }
 ];
+
 var prompts;
 if (flags.name) {
   prompts = flags.type ? undefined : promptType;
@@ -134,7 +135,6 @@ else {
       filesGenerator(prompts, flags);
       break;
     case 'postpublish':
-      // next = gen.async();
       readConfigs();
       break;
     case 'exit':

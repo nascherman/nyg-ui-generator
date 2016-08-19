@@ -1,0 +1,47 @@
+{
+  "name": "{{name}}",
+  "version": "0.0.0",
+  "description": "{{description}}",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "{{user.name}}",
+    "email": "{{user.email}}",
+    "url": "{{user.url}}"
+  },
+  "dependencies": {
+    "domready": "^1.0.8",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.10.4",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-1": "^6.5.0",
+    "babelify": "^7.3.0",
+    "react-addons-test-utils": "^15.2.1",
+    "react-unit": "^1.3.3",
+    "babel-tape-runner": "^2.0.1",
+    "tape-jsx-equals": "^1.0.0",
+    "extend-tape": "^1.2.0",
+    "faucet": "0.0.1",
+    "budo": "^8.3.0",
+    "fs.extra": "^1.3.2",
+    "brfs": "^1.4.3"
+  },
+  "scripts": {
+    "start": "budo example/example.js --live  --open -- -t babelify -t brfs",
+    "test": "babel-tape-runner test/test.js | faucet"
+  },
+  "keywords": {{#if isModule }} {{{tags}}} {{else}} []{{/if}},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/{{org.github}}/{{name}}.git"
+  },
+  "homepage": "https://github.com/{{org.github}}/{{name}}",
+  "bugs": {
+    "url": "https://github.com/{{org.github}}/{{name}}/issues"
+  }
+}
